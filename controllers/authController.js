@@ -2,7 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const SECRET_KEY = 'your_secret_key'; // In production, use environment variables
+const SECRET_KEY = 'BrainyBeam'; // In production, use environment variables
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
@@ -37,30 +37,5 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// Add a seed user function for initial setup
-exports.seedUser = async () => {
-  const users = [
-    { username: 'admin', password: 'admin123', role: 'admin' },
-    { username: 'editor', password: 'editor123', role: 'editor' },
-    { username: 'user', password: 'user123', role: 'user' }
-  ];
-
-  for (let userData of users) {
-    const existingUser = await User.findOne({ username: userData.username });
-    if (!existingUser) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(userData.password, salt);
-
-      const user = new User({
-        username: userData.username,
-        password: hashedPassword,
-        role: userData.role
-      });
-
-      await user.save();
-    }
   }
 };
